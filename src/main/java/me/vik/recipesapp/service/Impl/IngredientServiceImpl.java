@@ -14,12 +14,36 @@ public class IngredientServiceImpl implements IngredientService {
     private int ingredientId = 0;
 
     @Override
-    public Ingredient addIngredient(Ingredient ingredient) {
-        return ingredientCatalogue.put(ingredientId++, ingredient);
+    public int addIngredient(Ingredient ingredient) {
+        ingredientCatalogue.put(ingredientId, ingredient);
+        return ingredientId++;
     }
 
     @Override
     public Ingredient getIngredientId(int id) {
         return ingredientCatalogue.get(id);
+    }
+
+    @Override
+    public Ingredient editIngredient(int id, Ingredient ingredient) {
+        if (ingredientCatalogue.containsKey(id)) {
+            ingredientCatalogue.put(id, ingredient);
+            return ingredient;
+        } else {
+            return null;
+        }
+    }
+    @Override
+    public boolean deleteIngredient(int id) {
+        if (ingredientCatalogue.containsKey(id)) {
+            ingredientCatalogue.remove(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Map<Integer, Ingredient> getAllIngredient() {
+        return ingredientCatalogue;
     }
 }

@@ -16,12 +16,37 @@ public class RecipeServiceImpl implements RecipeService {
 
 
     @Override
-    public Recipe addRecipe(@RequestBody Recipe recipe) {
-        return recipeCatalogue.put(recipeId++,recipe);
+    public int addRecipe(@RequestBody Recipe recipe) {
+        recipeCatalogue.put(recipeId,recipe);
+        return recipeId++;
     }
 
     @Override
     public Recipe getRecipeId(int id) {
         return recipeCatalogue.get(id);
     }
+
+    @Override
+    public Recipe editRecipeId(int id, Recipe recipe) {
+        if (recipeCatalogue.containsKey(id)) {
+            recipeCatalogue.put(id, recipe);
+            return recipe;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean deleteRecipe(int id) {
+        if (recipeCatalogue.containsKey(id)) {
+            recipeCatalogue.remove(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Map<Integer, Recipe> getAllRecipe() {
+        return recipeCatalogue;
+    }
+
 }
