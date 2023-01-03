@@ -5,6 +5,9 @@ import me.vik.recipesapp.service.IngredientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/ingredients")
 public class IngredientController {
@@ -16,12 +19,12 @@ public class IngredientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ingredient> getIngredientId(@PathVariable int id) {
+    public ResponseEntity<?> getIngredientId(@PathVariable int id) {
         Ingredient ingredient = ingredientService.getIngredientId(id);
         if (ingredient == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body("Список пуст");
         }
-        return ResponseEntity.ok(ingredient);
+        return ResponseEntity.ok().body(ingredient);
     }
 
     @PostMapping("/{id}")
@@ -40,15 +43,17 @@ public class IngredientController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteIngredient(@PathVariable int id) {
-        if (ingredientService.deleteIngredient(id)) {
-            return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteIngredient(@PathVariable int id) {
+        boolean deleted = ingredientService.deleteIngredient(id);
+        if (deleted) {
+            return ResponseEntity.ok().body("Ингридиент №" + id + " удален!");
         }
         return ResponseEntity.notFound().build();
     }
 
     @GetMapping
-    public ResponseEntity<Ingredient> getAllIngredient() {
-        return null;
+    public ResponseEntity<?> getAllIngredient(){
+        Map<Integer, Ingredient> ingredients = ingredientService.getAllIngredient();
+        return ResponseEntity.ok().body(Objects.requireNonNullElse(ingredients, "Список отсутствует"));
     }
 }

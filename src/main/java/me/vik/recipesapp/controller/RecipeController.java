@@ -5,8 +5,11 @@ import me.vik.recipesapp.service.RecipeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.Objects;
+
 @RestController
-@RequestMapping("/recipe")
+@RequestMapping("/recipes")
 public class RecipeController {
     private final RecipeService recipeService;
 
@@ -15,12 +18,12 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Recipe> getRecipe(@PathVariable("id") int id) {
+    public ResponseEntity<?> getRecipe(@PathVariable("id") int id) {
         Recipe recipe = recipeService.getRecipeId(id);
         if (recipe == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body("Список пуст");
         }
-        return ResponseEntity.ok(recipe);
+        return ResponseEntity.ok().body(recipe);
     }
 
     @PostMapping
@@ -38,15 +41,17 @@ public class RecipeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable int id) {
-        if (recipeService.deleteRecipe(id)) {
-            return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteRecipe(@PathVariable int id) {
+        boolean deleted = recipeService.deleteRecipe(id);
+        if (deleted) {
+            return ResponseEntity.ok().body("Рецепт №" + id + " удален!");
         }
         return ResponseEntity.notFound().build();
     }
 
     @GetMapping
-    public ResponseEntity<Recipe> getAllRecipe() {
-        return null;
+    public ResponseEntity<?> getAllRecipe() {
+        Map<Integer, Recipe> recipes = recipeService.getAllRecipe();
+        return ResponseEntity.ok().body(Objects.requireNonNullElse(recipes, "Список отсутствует"));
     }
 }
