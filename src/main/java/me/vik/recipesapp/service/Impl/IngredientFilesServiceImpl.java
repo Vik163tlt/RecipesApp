@@ -4,7 +4,6 @@ import me.vik.recipesapp.service.IngredientFilesService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,7 +33,7 @@ public class IngredientFilesServiceImpl implements IngredientFilesService {
             return Files.readString(Path.of(ingredientsFilePath, ingredientsFileName));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException("Ошибка чтения файла");
         }
     }
 

@@ -33,7 +33,7 @@ public class RecipeFilesServiceImpl implements RecipeFilesService {
             return Files.readString(Path.of(recipesFilePath, recipesFileName));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException("Ошибка чтения файла");
         }
     }
     private boolean cleanRecipesFile(){

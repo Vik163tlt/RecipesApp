@@ -70,7 +70,7 @@ public class RecipeServiceImpl implements RecipeService {
             String json = new ObjectMapper().writeValueAsString(recipeCatalogue);
             recipeFilesService.saveRecipesToFile(json);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Ошибка записи файла");
         }
     }
 
@@ -80,7 +80,7 @@ public class RecipeServiceImpl implements RecipeService {
             recipeCatalogue = new ObjectMapper().readValue(json, new TypeReference<HashMap<Integer, Recipe>>(){
             });
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Ошибка чтения файла");
         }
     }
 
