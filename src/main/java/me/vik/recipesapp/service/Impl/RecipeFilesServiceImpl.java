@@ -1,5 +1,6 @@
 package me.vik.recipesapp.service.Impl;
 
+import me.vik.recipesapp.Exception.WrongReadingFileException;
 import me.vik.recipesapp.service.RecipeFilesService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class RecipeFilesServiceImpl implements RecipeFilesService {
             return Files.readString(Path.of(recipesFilePath, recipesFileName));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Ошибка чтения файла");
+            throw new WrongReadingFileException();
         }
     }
     private boolean cleanRecipesFile(){

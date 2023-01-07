@@ -3,6 +3,8 @@ package me.vik.recipesapp.service.Impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.vik.recipesapp.Exception.WrongReadingFileException;
+import me.vik.recipesapp.Exception.WrongWritingFileException;
 import me.vik.recipesapp.model.Recipe;
 import me.vik.recipesapp.service.RecipeFilesService;
 import me.vik.recipesapp.service.RecipeService;
@@ -70,7 +72,7 @@ public class RecipeServiceImpl implements RecipeService {
             String json = new ObjectMapper().writeValueAsString(recipeCatalogue);
             recipeFilesService.saveRecipesToFile(json);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Ошибка записи файла");
+            throw new WrongWritingFileException();
         }
     }
 
@@ -80,7 +82,7 @@ public class RecipeServiceImpl implements RecipeService {
             recipeCatalogue = new ObjectMapper().readValue(json, new TypeReference<HashMap<Integer, Recipe>>(){
             });
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Ошибка чтения файла");
+            throw new WrongReadingFileException();
         }
     }
 
