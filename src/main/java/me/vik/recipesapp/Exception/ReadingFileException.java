@@ -1,7 +1,7 @@
 package me.vik.recipesapp.Exception;
 
-public class WrongReadingFileException extends RuntimeException{
-    public WrongReadingFileException() {
+public class ReadingFileException extends RuntimeException{
+    public ReadingFileException() {
         System.out.print("Ошибка чтения файла");
     }
 }

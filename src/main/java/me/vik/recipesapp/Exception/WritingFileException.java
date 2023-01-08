@@ -1,7 +1,7 @@
 package me.vik.recipesapp.Exception;
 
-public class WrongWritingFileException extends RuntimeException{
-    public WrongWritingFileException() {
+public class WritingFileException extends RuntimeException{
+    public WritingFileException() {
         System.out.print("Ошибка записи файла");
     }
 }

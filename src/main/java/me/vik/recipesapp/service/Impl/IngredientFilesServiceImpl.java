@@ -1,6 +1,7 @@
 package me.vik.recipesapp.service.Impl;
 
-import me.vik.recipesapp.Exception.WrongReadingFileException;
+import me.vik.recipesapp.Exception.ReadingFileException;
+import me.vik.recipesapp.Exception.WritingFileException;
 import me.vik.recipesapp.service.IngredientFilesService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class IngredientFilesServiceImpl implements IngredientFilesService {
@@ -35,11 +38,12 @@ public class IngredientFilesServiceImpl implements IngredientFilesService {
             return Files.readString(Path.of(ingredientsFilePath, ingredientsFileName));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new WrongReadingFileException();
+            throw new ReadingFileException();
         }
     }
 
-    private boolean cleanIngredientsFile(){
+    @Override
+    public boolean cleanIngredientsFile(){
         try {
             Files.deleteIfExists(Path.of(ingredientsFilePath, ingredientsFileName));
             Files.createFile(Path.of(ingredientsFilePath));
@@ -52,5 +56,15 @@ public class IngredientFilesServiceImpl implements IngredientFilesService {
     @Override
     public File getIngredientsFile() {
         return new File(ingredientsFilePath + "/" + ingredientsFileName);
+    }
+
+    @Override
+    public Path createTempIngredientsFile() {
+        try {
+            Path path = Files.createTempFile(Path.of(ingredientsFilePath),"tempFile",""+ LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
+            return path;
+        } catch (IOException e) {
+            throw new WritingFileException();
+        }
     }
 }
