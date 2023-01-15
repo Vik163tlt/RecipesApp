@@ -155,5 +155,4 @@ public class RecipeController {
         Map<Integer, Recipe> recipes = recipeService.getAllRecipe();
         return ResponseEntity.ok().body(Objects.requireNonNullElse(recipes, "Список отсутствует"));
     }
-
 }

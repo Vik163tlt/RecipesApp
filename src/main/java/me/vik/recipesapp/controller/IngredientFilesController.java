@@ -2,11 +2,11 @@ package me.vik.recipesapp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import me.vik.recipesapp.Exception.ReadingFileException;
 import me.vik.recipesapp.service.IngredientFilesService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +28,13 @@ public class IngredientFilesController {
     @Operation(summary = "Скачать список ингридиентов")
     public ResponseEntity<InputStreamResource> downloadIngredientsFile() throws FileNotFoundException {
         File exportFile = ingredientFilesService.getIngredientsFile();
-
+        InputStreamResource resource;
         if (exportFile.exists()) {
-            InputStreamResource resource = new InputStreamResource(new FileInputStream(exportFile));
+            try {
+                resource = new InputStreamResource(new FileInputStream(exportFile));
+            } catch (FileNotFoundException e) {
+                throw new FileNotFoundException("Файл на сервере не найден");
+            }
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_JSON)
                     .contentLength(exportFile.length())
@@ -50,11 +54,10 @@ public class IngredientFilesController {
         try (FileOutputStream fos = new FileOutputStream(importFile)) {
             IOUtils.copy(file.getInputStream(), fos);
             return ResponseEntity.ok().build();
-//        } catch (FileNotFoundException e) {
-//            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ReadingFileException("Неверный формат файла для записи, попробуйте снова");
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }

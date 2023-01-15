@@ -72,7 +72,7 @@ public class IngredientServiceImpl implements IngredientService {
             String json = new ObjectMapper().writeValueAsString(ingredientCatalogue);
             ingredientFilesService.saveIngredientsToFile(json);
         } catch (JsonProcessingException e) {
-            throw new WritingFileException();
+            throw new WritingFileException("Ошибка записи файла");
         }
     }
 
@@ -81,7 +81,7 @@ public class IngredientServiceImpl implements IngredientService {
         try {
             ingredientCatalogue = new ObjectMapper().readValue(json, new TypeReference<HashMap<Integer, Ingredient>>(){});
         } catch (JsonProcessingException e) {
-            throw new ReadingFileException();
+            throw new ReadingFileException("Ошибка чтения файла");
         }
     }
 }

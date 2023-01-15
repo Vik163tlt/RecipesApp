@@ -2,6 +2,7 @@ package me.vik.recipesapp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import me.vik.recipesapp.Exception.WritingFileException;
 import me.vik.recipesapp.service.RecipeFilesService;
 import me.vik.recipesapp.service.RecipeService;
 import org.apache.commons.io.IOUtils;
@@ -33,9 +34,13 @@ public class RecipeFilesController {
     @Operation(summary = "Скачать список рецептов")
     public ResponseEntity<InputStreamResource> downloadRecipesFile() throws FileNotFoundException {
         File file = recipeFilesService.getRecipesFile();
-
+        InputStreamResource resource;
         if (file.exists()) {
-            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+            try {
+                resource = new InputStreamResource(new FileInputStream(file));
+            } catch (FileNotFoundException e) {
+                throw new FileNotFoundException("Файл на сервере не найден");
+            }
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_JSON)
                     .contentLength(file.length())
@@ -50,15 +55,15 @@ public class RecipeFilesController {
     @Operation(summary = "Загрузить список рецептов")
     public ResponseEntity<Void> uploadRecipesFile(@RequestParam MultipartFile file) {
         recipeFilesService.cleanRecipesFile();
-        File importFile = recipeFilesService.getRecipesFile();
-
-        try (FileOutputStream fos = new FileOutputStream(importFile)) {
+        try (FileOutputStream fos = new FileOutputStream(recipeFilesService.getRecipesFile())) {
             IOUtils.copy(file.getInputStream(), fos);
             return ResponseEntity.ok().build();
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (IOException e) {
+            throw new WritingFileException("Неверный формат файла для записи, попробуйте снова");
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @GetMapping("/recipeExportTXTFile")
@@ -84,4 +89,3 @@ public class RecipeFilesController {
         }
     }
 }
-

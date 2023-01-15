@@ -38,7 +38,7 @@ public class RecipeFilesServiceImpl implements RecipeFilesService {
             return Files.readString(Path.of(recipesFilePath, recipesFileName));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new ReadingFileException();
+            throw new ReadingFileException("Ошибка чтения файла");
         }
     }
 
@@ -64,7 +64,7 @@ public class RecipeFilesServiceImpl implements RecipeFilesService {
             Path path = Files.createTempFile(Path.of(recipesFilePath),"tempFile",""+ LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
             return path;
         } catch (IOException e) {
-            throw new WritingFileException();
+            throw new WritingFileException("Ошибка записи файла");
         }
     }
 }

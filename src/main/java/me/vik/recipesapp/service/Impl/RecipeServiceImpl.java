@@ -91,7 +91,7 @@ public class RecipeServiceImpl implements RecipeService {
                     i++;
                 }
             } catch (IOException e) {
-                throw new ReadingFileException();
+                throw new ReadingFileException("Ошибка чтения файла");
             }
         }
         return path;
@@ -103,7 +103,7 @@ public class RecipeServiceImpl implements RecipeService {
             String json = new ObjectMapper().writeValueAsString(recipeCatalogue);
             recipeFilesService.saveRecipesToFile(json);
         } catch (JsonProcessingException e) {
-            throw new WritingFileException();
+            throw new WritingFileException("Ошибка чтения файла");
         }
     }
 
@@ -113,7 +113,7 @@ public class RecipeServiceImpl implements RecipeService {
             recipeCatalogue = new ObjectMapper().readValue(json, new TypeReference<HashMap<Integer, Recipe>>(){
             });
         } catch (JsonProcessingException e) {
-            throw new ReadingFileException();
+            throw new ReadingFileException("Ошибка записи файла");
         }
     }
 
